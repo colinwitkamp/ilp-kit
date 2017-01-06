@@ -1,0 +1,275 @@
+{
+  "name": "ilp-kit",
+  "version": "1.0.0",
+  "description": "ILP kit",
+  "main": "bin/server.js",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/interledgerjs/ilp-kit"
+  },
+  "author": "Interledger Team <info@interledger.org>",
+  "homepage": "https://github.com/interledgerjs/ilp-kit",
+  "keywords": [
+    "five-bells",
+    "ilp",
+    "ledger",
+    "wallet",
+    "ui",
+    "payments",
+    "finance"
+  ],
+  "scripts": {
+    "start": "DEBUG_COLORS=1 concurrently -p \"[{name}]\" -n \"ledger,api,wallet\" -c \"red,blue,cyan\" \"npm run start-prod-ledger\" \"npm run start-prod-api\" \"npm run start-prod\"",
+    "start-prod": "better-npm-run start-prod",
+    "start-prod-api": "better-npm-run start-prod-api",
+    "start-prod-ledger": "better-npm-run start-prod-ledger",
+    "build": "touch src/theme/variables-custom.scss ; better-npm-run build",
+    "build-dlls": "touch src/theme/variables-custom.scss ; node ./bin/dlls.js",
+    "postinstall": "npm rebuild node-sass; npm run build",
+    "lint": "eslint -c .eslintrc src api",
+    "start-dev": "better-npm-run start-dev",
+    "start-dev-api": "better-npm-run start-dev-api",
+    "start-dev-ledger": "better-npm-run start-dev-ledger",
+    "watch-client": "better-npm-run watch-client",
+    "proxy": "node ./bin/proxy.js",
+    "dev": "DEBUG_COLORS=1 concurrently -p \"[{name}]\" -n \"watcher,ledger,api,wallet\" -c \"yellow,red,blue,cyan\" \"npm run watch-client\" \"npm run start-dev-ledger\" \"npm run start-dev-api\" \"npm run start-dev\"",
+    "dev-with-proxy": "echo 'need permission to bind to ports 80 and 443' ; sudo echo -n ; DEBUG_COLORS=1 concurrently -p \"[{name}]\" -n \"watcher,ledger,api,wallet,proxy\" -c \"yellow,red,blue,cyan,green\" \"npm run watch-client\" \"npm run start-dev-ledger\" \"npm run start-dev-api\" \"npm run start-dev\" \"sudo npm run proxy\"",
+    "test": "touch src/theme/variables-custom.scss ; karma start",
+    "test-api": "better-npm-run test-api",
+    "integration": "integration-loader && integration all",
+    "apidoc": "apidoc -i api/src/controllers/ -o apidoc-out",
+    "key": "./node_modules/ilp-kit-cli/bin/configure.js key",
+    "configure": "./node_modules/ilp-kit-cli/bin/configure.js configure",
+    "peer": "./node_modules/ilp-kit-cli/bin/configure.js peer",
+    "depeer": "./node_modules/ilp-kit-cli/bin/configure.js depeer",
+    "list-peers": "./node_modules/ilp-kit-cli/bin/configure.js list"
+  },
+  "betterScripts": {
+    "start-prod": {
+      "command": "node ./bin/server.js",
+      "env": {
+        "NODE_PATH": "./src",
+        "NODE_ENV": "production"
+      }
+    },
+    "start-prod-api": {
+      "command": "node ./bin/api.js",
+      "env": {
+        "NODE_PATH": "./api",
+        "NODE_ENV": "production"
+      }
+    },
+    "start-prod-ledger": {
+      "command": "node ./bin/ledger.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "start-dev": {
+      "command": "node ./bin/server.js",
+      "env": {
+        "NODE_PATH": "./src",
+        "NODE_ENV": "development"
+      }
+    },
+    "start-dev-api": {
+      "command": "node ./bin/api.js",
+      "env": {
+        "NODE_PATH": "./api",
+        "NODE_ENV": "development"
+      }
+    },
+    "start-dev-ledger": {
+      "command": "node ./bin/ledger.js | bunyan --color",
+      "env": {
+        "NODE_PATH": "./node_modules/five-bells-ledger",
+        "NODE_ENV": "development"
+      }
+    },
+    "watch-client": {
+      "command": "node webpack/webpack-dev-server.js",
+      "env": {
+        "UV_THREADPOOL_SIZE": 100,
+        "NODE_PATH": "./src"
+      }
+    },
+    "build": {
+      "command": "webpack --verbose --colors --display-error-details --progress --config webpack/prod.config.js",
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "test-api": {
+      "command": "node ./bin/testApi.js",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    }
+  },
+  "dependencies": {
+    "apidoc": "^0.16.1",
+    "autoprefixer-loader": "^3.2.0",
+    "babel-core": "~6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-lodash": "^3.2.11",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-react-display-name": "^6.3.13",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-plugin-typecheck": "^3.6.0",
+    "babel-polyfill": "^6.13.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.14.0",
+    "babel-runtime": "^6.11.6",
+    "better-npm-run": "0.0.13",
+    "bignumber.js": "^3.0.1",
+    "bootstrap-sass": "^3.3.7",
+    "bootstrap-sass-loader": "vhpoet/bootstrap-sass-loader",
+    "classnames": "^2.2.5",
+    "clean-webpack-plugin": "^0.1.10",
+    "clipboard": "^1.5.15",
+    "co": "^4.6.0",
+    "co-foreach": "^1.1.1",
+    "compression": "^1.6.0",
+    "concurrently": "^3.1.0",
+    "constitute": "^1.6.2",
+    "css-loader": "^0.23.1",
+    "ejs": "^2.4.1",
+    "email-templates": "^2.3.0",
+    "express": "^4.14.0",
+    "express-force-ssl": "^0.3.1",
+    "extract-text-webpack-plugin": "^0.9.1",
+    "file-loader": "^0.9.0",
+    "five-bells-condition": "^3.2.0",
+    "five-bells-ledger": "^19.4.1",
+    "five-bells-shared": "^14.1.2",
+    "font-awesome": "^4.7.0",
+    "font-awesome-webpack": "0.0.4",
+    "hoist-non-react-statics": "^1.0.3",
+    "http-proxy": "^1.12.0",
+    "ilp": "^7.1.0",
+    "ilp-connector": "^12.11.0",
+    "ilp-kit-cli": "^10.0.1",
+    "ilp-plugin-bells": "^9.1.0",
+    "ilp-plugin-virtual": "^11.0.0",
+    "istanbul": "^0.4.5",
+    "jimp": "^0.2.27",
+    "json-loader": "^0.5.4",
+    "kcors": "^1.0.1",
+    "koa": "^1.1.2",
+    "koa-body": "^1.4.0",
+    "koa-mag": "^1.1.0",
+    "koa-passport": "^1.3.1",
+    "koa-router": "^5.3.0",
+    "koa-session": "^3.3.1",
+    "koa.io": "0.0.3",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "lodash": "^4.16.4",
+    "mag": "^0.9.1",
+    "mag-hub": "^0.1.1",
+    "moment": "^2.12.0",
+    "moment-timezone": "^0.5.11",
+    "nock": "^9.0.0",
+    "node-sass": "^3.8.0",
+    "nodemailer": "^2.4.1",
+    "nodemailer-mailgun-transport": "^1.0.2",
+    "passport-github": "^1.1.0",
+    "passport-http": "^0.3.0",
+    "passport-local": "^1.0.0",
+    "pg": "^4.4.4",
+    "pg-native": "^1.10.0",
+    "phantomjs-prebuilt": "^2.1.7",
+    "piping": "^0.3.0",
+    "pretty-error": "^1.2.0",
+    "raw-loader": "^0.5.1",
+    "react": "^15.4.0",
+    "react-addons-create-fragment": "^15.4.0",
+    "react-addons-css-transition-group": "^15.4.0",
+    "react-addons-test-utils": "^15.4.0",
+    "react-bootstrap": "^0.30.3",
+    "react-bootstrap-table": "^2.6.0",
+    "react-dom": "^15.4.0",
+    "react-dropzone-component": "^1.2.0",
+    "react-ga": "^1.4.1",
+    "react-helmet": "^3.2.3",
+    "react-hotkeys": "^0.9.0",
+    "react-paginate": "^4.1.0",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
+    "react-router-bootstrap": "^0.23.1",
+    "react-router-redux": "^3.0.0",
+    "react-timeago": "^3.1.3",
+    "react-tooltip": "^3.2.1",
+    "react-transform-catch-errors": "^1.0.0",
+    "react-transform-hmr": "^1.0.4",
+    "react-waypoint": "^2.0.2",
+    "reconnect-core": "^1.3.0",
+    "redbox-react": "^1.1.1",
+    "redux": "^3.6.0",
+    "redux-async-connect": "^1.0.0-rc4",
+    "redux-form": "^5.3.1",
+    "redux-pagination": "^0.1.0",
+    "request-ip": "^1.2.3",
+    "resolve-url-loader": "^1.6.0",
+    "sass-loader": "^3.2.3",
+    "sequelize": "^3.17.1",
+    "serialize-javascript": "^1.1.2",
+    "serve-favicon": "^2.3.0",
+    "socket.io-client": "^1.5.0",
+    "strip-loader": "^0.1.0",
+    "style-loader": "^0.13.1",
+    "superagent": "^1.8.0",
+    "superagent-promise": "^1.1.0",
+    "supertest-as-promised": "^4.0.1",
+    "umzug": "^1.11.0",
+    "url-loader": "^0.5.6",
+    "uuid4": "^1.0.0",
+    "webfinger.js": "^2.3.2",
+    "webpack": "^1.13.2",
+    "webpack-isomorphic-tools": "^2.5.7"
+  },
+  "devDependencies": {
+    "babel-eslint": "^5.0.4",
+    "chai": "^3.3.0",
+    "co-mocha": "^1.1.2",
+    "eslint": "1.10.3",
+    "eslint-config-airbnb": "0.1.0",
+    "eslint-loader": "^1.0.0",
+    "eslint-plugin-import": "^0.8.0",
+    "eslint-plugin-react": "^5.1.1",
+    "five-bells-integration-test-loader": "^1.0.1",
+    "karma": "^0.13.22",
+    "karma-mocha": "^0.2.0",
+    "karma-mocha-reporter": "^1.1.1",
+    "karma-phantomjs-launcher": "^1.0.2",
+    "karma-sourcemap-loader": "^0.3.5",
+    "karma-webpack": "^1.7.0",
+    "mocha": "^2.4.5",
+    "phantomjs": "^1.9.18",
+    "phantomjs-polyfill": "0.0.2",
+    "redux-devtools": "^3.3.1",
+    "redux-devtools-dock-monitor": "^1.1.1",
+    "redux-devtools-log-monitor": "^1.0.11",
+    "redux-mock-store": "1.0.3",
+    "riek": "^1.0.7",
+    "sqlite3": "^3.1.1",
+    "superagent-mocker": "^0.4.0",
+    "supertest": "^1.2.0",
+    "webpack-dev-middleware": "^1.7.0",
+    "webpack-hot-middleware": "^2.12.2"
+  },
+  "engines": {
+    "node": "6.9.1"
+  },
+  "config": {
+    "five-bells-integration-test-loader": {
+      "module": "five-bells-integration-test",
+      "repo": "interledgerjs/five-bells-integration-test"
+    }
+  }
+}

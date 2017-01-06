@@ -1,0 +1,15 @@
+{
+  "name": "ilp-kit",
+  "description": "ILP kit",
+  "repository": "https://github.com/interledgerjs/ilp-kit",
+  "logo": "http://node-js-sample.herokuapp.com/node.svg",
+  "keywords": [
+    "five-bells",
+    "ilp",
+    "ledger",
+    "wallet",
+    "ui",
+    "payments",
+    "finance"
+  ]
+}
