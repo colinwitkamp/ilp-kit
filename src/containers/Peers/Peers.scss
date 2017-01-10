@@ -1,0 +1,37 @@
+@import 'variables';
+@import 'mixins';
+
+.peer {
+  position: relative;
+
+  &:hover .deleteButton {
+    opacity: 1;
+  }
+}
+.limit {
+  &.loading {
+    font-style: italic;
+  }
+  &.invalid {
+    color: #d9d9d9;
+  }
+}
+span.limit {
+  cursor: pointer;
+  border-bottom: 1px dashed;
+}
+.lbl {
+  display: block;
+}
+.deleteButton {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  padding: 5px;
+  color: $text-color;
+  opacity: 0;
+
+  &:hover {
+    color: $danger;
+  }
+}

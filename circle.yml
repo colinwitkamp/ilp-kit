@@ -1,0 +1,36 @@
+machine:
+  node:
+    version: 6.9
+  services:
+    - docker
+
+dependencies:
+  cache_directories:
+    - node_modules
+  override:
+    - npm prune && npm install
+
+test:
+  pre:
+    - npm run build
+  override:
+#   - npm run lint
+    - npm test
+  post:
+    - docker build -t interledgerjs/ilp-kit:latest .
+    - docker tag interledgerjs/ilp-kit:latest interledgerjs/ilp-kit:"$(git describe --tags)"
+
+
+deployment:
+  production:
+    branch: master
+    commands:
+      # Push Docker image tagged latest and tagged with commit descriptor
+      - sed "s/<AUTH>/${DOCKER_TOKEN}/" < "dockercfg-template" > ~/.dockercfg
+      - docker push interledgerjs/ilp-kit:latest
+      - docker push interledgerjs/ilp-kit:"$(git describe)"
+      # Publish spec
+      - git config --global user.email "info@circleci.com"
+      - git config --global user.name "CircleCI"
+      - git config --global push.default simple
+      - node scripts/publish_web.js

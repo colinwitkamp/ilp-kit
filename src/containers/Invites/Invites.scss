@@ -1,0 +1,42 @@
+@import 'variables';
+@import 'mixins';
+
+.invite {
+  position: relative;
+
+  &:hover .deleteButton {
+    opacity: 1;
+  }
+}
+.lbl {
+  display: block;
+}
+.code {
+  border-bottom: 1px dotted $text-color;
+
+  @include singleLinkColor($text-color);
+}
+.amountColumn {
+  text-align: center;
+}
+.amount {
+  display: block;
+  margin: 3px 0;
+  font-size: 20px;
+  color: $brand-color;
+}
+.claimed {
+  color: $muted-text-color;
+}
+.deleteButton {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  padding: 5px;
+  color: $text-color;
+  opacity: 0;
+
+  &:hover {
+    color: $danger;
+  }
+}
