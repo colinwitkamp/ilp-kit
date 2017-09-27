@@ -61,9 +61,10 @@ function WithdrawalsControllerFactory (deps) {
       try {
         await pay.withdraw(ctx.req.user, ctx.body.amount)
 
-        this.status = 201
+        ctx.status = 201
       } catch (e) {
-        // TODO are there any other types of errors?
+        
+// TODO are there any other types of errors?
         throw new LedgerInsufficientFundsError()
       }
     }
