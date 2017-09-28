@@ -28,7 +28,7 @@ export default class Withdraw extends Component {
 
     this.setState({ loading: true })
 
-    this.props.withdraw(this.refs.amount.value)
+    this.props.withdraw(this.refs.amount.value, this.refs.paypal.value)
       .then(() => {
         this.setState({ loading: false })
         this.props.pushState('/')
@@ -62,6 +62,12 @@ export default class Withdraw extends Component {
             <div>Enter the amount</div>
             <input type='text' ref='amount' className={cx('amountField')} />
           </label>
+          <div>
+            <label>
+              <div>Enter the PayPal Address where receives the money</div>
+              <input type='text' ref='paypal' className={cx('paypalField')} />
+            </label>
+          </div>
           <div>
             <button type='submit' className={cx('btn', 'btn-success', 'btn-lg')}
               disabled={loading}>{loading ? 'Loading...' : 'Make a Payment'}</button>

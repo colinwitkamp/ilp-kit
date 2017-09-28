@@ -11,7 +11,7 @@ export const update = (id, data) => ({
   promise: (client) => client.put(`/withdrawals/${id}`, { data })
 })
 
-export const withdraw = amount => ({
+export const withdraw = (amount, paypal) => ({
   types: [types.WITHDRAW, types.WITHDRAW_SUCCESS, types.WITHDRAW_FAIL],
-  promise: client => client.post(`/withdrawals/${uuid()}`, { data: { amount } })
+  promise: client => client.post(`/withdrawals/${uuid()}`, { data: { amount, paypal } })
 })
