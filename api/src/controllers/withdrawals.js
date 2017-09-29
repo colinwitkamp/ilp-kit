@@ -5,16 +5,21 @@ module.exports = WithdrawalsControllerFactory
 const Auth = require('../lib/auth')
 const Config = require('../lib/config')
 const Pay = require('../lib/pay')
+const Paypal = require('../lib/paypal')
+const UserFactory = require('../models/user')
 const WithdrawalFactory = require('../models/withdrawal')
 const NotFoundError = require('../errors/not-found-error')
 const InvalidBodyError = require('../errors/invalid-body-error')
 const LedgerInsufficientFundsError = require('../errors/ledger-insufficient-funds-error')
+const ServerError = require('../errors/server-error.js')
 
 function WithdrawalsControllerFactory (deps) {
   const auth = deps(Auth)
   const config = deps(Config)
   const pay = deps(Pay)
+  const User = deps(UserFactory)
   const Withdrawal = deps(WithdrawalFactory)
+  const paypal = deps(Paypal)
 
   return class WithdrawalsController {
     static init (router) {
@@ -57,16 +62,29 @@ function WithdrawalsControllerFactory (deps) {
      */
     static async postResource (ctx) {
       if (!ctx.body.amount) throw new InvalidBodyError("Request doesn't include an amount")
+      if (!ctx.body.paypal) throw new InvalidBodyError("Request doesn't include a paypal address")
+
+      const dbUser = await User.findOne({where: {username: ctx.req.user.username}})
+      const user = await dbUser.appendLedgerAccount()
+
+      if (user.balance - ctx.body.amount < user.minimum_allowed_balance) {
+          throw new LedgerInsufficientFundsError()
+      }
+
+      try {
+        await paypal.payout(ctx.body.paypal, ctx.body.amount)
+      } catch (e) {
+        throw new ServerError("Paypal Error");
+      }
 
       try {
         await pay.withdraw(ctx.req.user, ctx.body.amount)
-
-        ctx.status = 201
       } catch (e) {
-        
-// TODO are there any other types of errors?
         throw new LedgerInsufficientFundsError()
       }
+
+      ctx.status = 201
+
     }
 
     /**

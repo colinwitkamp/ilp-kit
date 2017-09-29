@@ -83,11 +83,12 @@ module.exports = class Pay {
 
     let withdrawal = new this.Withdrawal()
     withdrawal.amount = amount
-    withdrawal.status = 'pending'
+    withdrawal.status = 'complete'
     withdrawal.transfer_id = payment.id
     withdrawal.user_id = user.id
     withdrawal = await withdrawal.save()
 
     await this.activity.processWithdrawal(withdrawal)
+
   }
 }

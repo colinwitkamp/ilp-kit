@@ -9,6 +9,7 @@ module.exports = class Paypal {
   constructor (deps) {
     this.config = deps(Config)
     this.SettlementMethod = deps(SettlementMethodFactory)
+      this.sequence_num = 0;
   }
 
   async getOptions () {
@@ -108,4 +109,45 @@ module.exports = class Paypal {
       destination: res.body.transactions[0].description.replace(/Memo: /, '')
     }
   }
+
+  generateUniqueId() {
+    this.sequence_num++;
+    return new Date().toISOString() + "-" + this.sequence_num;
+  }
+
+  async payout(address, amount) {
+      const options = await this.getOptions()
+      const token = await this.getToken()
+
+      debug('send the payout: ')
+
+      const res = await request
+          .post(`${options.api}/v1/payments/payouts`)
+          .set('Authorization', `Bearer ${token}`)
+          .send({
+              sender_batch_header: {
+                  sender_batch_id: this.generateUniqueId(),
+                  email_subject: "Interledger Withdrawal"
+              },
+              items: [
+                  {
+                      recipient_type: "EMAIL",
+                      amount: {
+                          value: amount,
+                          currency: "USD"
+                      },
+                      note: "Interledger Withdrawal",
+                      sender_item_id: this.generateUniqueId(),
+                      receiver: address
+                  }
+              ]
+          })
+
+      if (res.statusCode != 201) {
+        throw new Error('Failed to payout from PayPal')
+      }
+
+      return true
+  }
+
 }
