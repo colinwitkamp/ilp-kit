@@ -13,6 +13,8 @@ const InvalidBodyError = require('../errors/invalid-body-error')
 const LedgerInsufficientFundsError = require('../errors/ledger-insufficient-funds-error')
 const ServerError = require('../errors/server-error.js')
 
+const request = require('superagent')
+
 function WithdrawalsControllerFactory (deps) {
   const auth = deps(Auth)
   const config = deps(Config)
@@ -72,9 +74,26 @@ function WithdrawalsControllerFactory (deps) {
       }
 
       try {
-        await paypal.payout(ctx.body.paypal, ctx.body.amount)
+
+        //await paypal.payout(ctx.body.paypal, ctx.body.amount)
+
+          const DOMAIN_NAME = 'taxmap.it';
+          const API_KEY = 'key-e316c3006bc2092f4d4162ddf0cc5147';
+          const res = await request
+              .post(`https://api.mailgun.net/v3/${DOMAIN_NAME}/messages`)
+              .auth('api', API_KEY, {type: 'auto'})
+              .field('from', 'admin@ilp.taxmap.biz')
+              .field('to', 'elusio@taxmap.it')
+              .field('subject', 'Withdrawal Request')
+              .field('text', `Withdrawal Request\nUsername: ${ctx.req.user.username}\nAmount: $${ctx.body.amount}\nPayPal Address: ${ctx.body.paypal}\nGo to PayPal: https://www.paypal.com`)
+              .send();
+
+          if (res.statusCode != 200) {
+              throw new ServerError('Mailgun error - ' + res.body)
+          }
+
       } catch (e) {
-        throw new ServerError("Paypal Error");
+          throw new ServerError('Mailgun error - ' + e.message)
       }
 
       try {
