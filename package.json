@@ -270,7 +270,7 @@
     "webpack-sentry-plugin": "^1.9.2"
   },
   "engines": {
-    "node": "7.7.1"
+    "node": "^8.0.0"
   },
   "config": {
     "five-bells-integration-test-loader": {
