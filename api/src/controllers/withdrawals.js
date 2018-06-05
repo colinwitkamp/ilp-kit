@@ -77,13 +77,14 @@ function WithdrawalsControllerFactory (deps) {
 
         //await paypal.payout(ctx.body.paypal, ctx.body.amount)
 
-          const DOMAIN_NAME = 'taxmap.it';
-          const API_KEY = 'key-e316c3006bc2092f4d4162ddf0cc5147';
+          const DOMAIN_NAME = process.env.API_MAILGUN_DOMAIN;
+          const API_KEY = process.env.API_MAILGUN_API_KEY;
+
           const res = await request
               .post(`https://api.mailgun.net/v3/${DOMAIN_NAME}/messages`)
               .auth('api', API_KEY, {type: 'auto'})
-              .field('from', 'admin@ilp.taxmap.biz')
-              .field('to', 'elusio@taxmap.it')
+              .field('from', process.env.API_EMAIL_SENDER_ADDRESS)
+              .field('to', process.env.API_EMAIL_PAYPAL_ADMIN)
               .field('subject', 'Withdrawal Request')
               .field('text', `Withdrawal Request\nUsername: ${ctx.req.user.username}\nAmount: $${ctx.body.amount}\nPayPal Address: ${ctx.body.paypal}\nGo to PayPal: https://www.paypal.com`)
               .send();
