@@ -4,7 +4,8 @@ RUN apt-get -y install curl
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 
-RUN apt-get update && apt-get install -y apt-transport-https python postgresql libpq-dev build-essential libpq5 git  yarn
+RUN apt-get update && apt-get install -y python postgresql libpq-dev build-essential libpq5 git 
+RUN npm install yarn -g
 
 COPY . /usr/src/app
 WORKDIR /usr/src/app
