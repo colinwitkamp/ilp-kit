@@ -1,11 +1,14 @@
 FROM node:7-slim
 
-RUN apt-get update && apt-get install -y python postgresql libpq-dev build-essential libpq5 git
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+
+RUN apt-get update && apt-get install -y python postgresql libpq-dev build-essential libpq5 git yarn
 
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-RUN npm install
+RUN yarn install
 # native modules need to be rebuilt for the new system
 RUN npm rebuild
 RUN npm run build
