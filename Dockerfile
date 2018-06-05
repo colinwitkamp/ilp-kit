@@ -1,4 +1,4 @@
-FROM node:8-slim
+FROM node:7-slim
 RUN apt-get update
 RUN apt-get -y install curl apt-transport-https ca-certificates 
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -

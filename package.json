@@ -269,9 +269,6 @@
     "webpack-hot-middleware": "^2.18.0",
     "webpack-sentry-plugin": "^1.9.2"
   },
-  "engines": {
-    "node": "^8.0.0"
-  },
   "config": {
     "five-bells-integration-test-loader": {
       "module": "five-bells-integration-test",
